@@ -23,26 +23,35 @@ THEME = {
 
 def create_template():
     '''
-        Adds a new layout template to pio's templates.
-
-        The template sets the font color and
-        font to the values defined above in
-        the THEME dictionary.
-
-        The plot background and paper background
-        are the background color defined
-        above in the THEME dictionary.
-
-        Also, sets the hover label to have a
-        background color and font size
-        as defined for the label in the THEME dictionary.
-        The hover label's font color is the same
-        as the theme's overall font color. The hover mode
-        is set to 'closest'.
-
-        Also sets the colors for the bars in
-        the bar chart to those defined in
-        the THEME dictionary.
-
+        Adds a new layout template to Plotly's templates based on THEME settings.
     '''
-    # TODO : Define a theme as defined above
+    custom_template = go.layout.Template()
+
+    # Set the colors, font, and background
+    custom_template.layout = go.Layout(
+        colorway=THEME['bar_colors'],
+        paper_bgcolor=THEME['background_color'],
+        plot_bgcolor=THEME['background_color'],
+        font=dict(
+            family=THEME['font_family'],
+            color=THEME['font_color'],
+            size=THEME['label_font_size']
+        ),
+        hoverlabel=dict(
+            bgcolor=THEME['label_background_color'],
+            font_size=THEME['label_font_size'],
+            font_color=THEME['font_color']
+        ),
+        xaxis=dict(
+            showgrid=False,
+            zeroline=False
+        ),
+        yaxis=dict(
+            showgrid=False,
+            zeroline=False
+        )
+    )
+
+    pio.templates['custom_theme'] = custom_template
+
+    pio.templates.default = 'custom_theme'

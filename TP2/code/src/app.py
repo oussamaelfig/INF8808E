@@ -119,10 +119,13 @@ def radio_updated(mode, figure):
             new_fig: The figure to display after the change of radio input
             mode: The new mode
     '''
-    # TODO : Update the figure's data and y axis, as well as the informational
-    # text indicating the mode
-    new_fig = figure
-    return new_fig, ''
+    new_fig = bar_chart.init_figure()
+    new_fig = bar_chart.draw(new_fig, data, mode)
+    new_fig = bar_chart.update_y_axis(new_fig, mode)
+    
+    mode_text = 'Percent Mode' if mode == MODES['percent'] else 'Count Mode' # Update the mode text
+    
+    return new_fig, mode_text
 
 
 data = prep_data()
@@ -130,5 +133,7 @@ data = prep_data()
 create_template()
 
 fig = bar_chart.init_figure()
+fig = bar_chart.draw(fig, data, MODES['count'])
+fig = bar_chart.update_y_axis(fig, MODES['count'])
 
 app.layout = init_app_layout(fig)

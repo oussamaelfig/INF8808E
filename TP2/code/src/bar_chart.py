@@ -21,10 +21,9 @@ def init_figure():
     '''
     fig = go.Figure()
 
-    # TODO : Update the template to include our new theme and set the title
-
     fig.update_layout(
-        template=pio.templates['simple_white'],
+        template="simple_white",
+        title='Lines per Act',
         dragmode=False,
         barmode='relative'
     )
@@ -32,30 +31,53 @@ def init_figure():
     return fig
 
 
+
 def draw(fig, data, mode):
     '''
-        Draws the bar chart.
+        Draws the bar chart based on the mode.
 
-        Arg:
+        Args:
             fig: The figure comprising the bar chart
             data: The data to be displayed
             mode: Whether to display the count or percent data.
+
         Returns:
             fig: The figure comprising the drawn bar chart
     '''
-    fig = go.Figure(fig)  # conversion back to Graph Object
-    # TODO : Update the figure's data according to the selected mode
+    column = MODE_TO_COLUMN[mode]
+    fig = go.Figure(fig)
+    for act in data['Act'].unique():
+        act_data = data[data['Act'] == act]
+        for _, row in act_data.iterrows():
+            fig.add_trace(go.Bar(
+                x=[row['Player']],
+                y=[row[column]],
+                name=f'Act {act}',
+                hovertemplate=get_hover_template(row['Player'], mode)
+            ))
+
+    fig.update_layout(
+        xaxis_title="Player",
+        yaxis_title=column,
+        legend_title="Act",
+        hovermode='closest'
+    )
+
     return fig
+
 
 
 def update_y_axis(fig, mode):
     '''
-        Updates the y axis to say 'Lines (%)' or 'Lines (Count) depending on
-        the current display.
+        Updates the y-axis title based on the mode.
 
         Args:
-            mode: Current display mode
-        Returns: 
-            The updated figure
+            fig: The figure comprising the bar chart
+            mode: Current display mode (count or percent)
+
+        Returns:
+            fig: The updated figure
     '''
-    # TODO : Update the y axis title according to the current mode
+    y_axis_title = 'Lines (%)' if mode == MODES['percent'] else 'Lines (Count)'
+    fig.update_layout(yaxis_title=y_axis_title)
+    return fig
