@@ -47,7 +47,6 @@ def draw(fig, data, mode):
     column = MODE_TO_COLUMN[mode]
     fig = go.Figure(fig)
 
-    # Create a trace for each player
     for player in data['Player'].unique():
         player_data = data[data['Player'] == player]
         if not player_data.empty:
@@ -61,7 +60,7 @@ def draw(fig, data, mode):
     fig.update_layout(
         xaxis_title="Act",
         yaxis_title="Lines (%)" if mode == MODES['percent'] else "Lines (Count)",
-        barmode='stack',  # Change to 'stack' to stack the bars
+        barmode='stack',  
         legend_title="Player",
         hovermode='closest'
     )
