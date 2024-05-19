@@ -13,7 +13,7 @@ from modes import MODES, MODE_TO_COLUMN
 def init_figure():
     '''
         Initializes the Graph Object figure used to display the bar chart.
-        Sets the template to be used to "simple_white" as a base with
+        Sets the template to be used to "custom_theme" as a base with
         our custom template on top. Sets the title to 'Lines per act'
 
         Returns:
@@ -22,14 +22,13 @@ def init_figure():
     fig = go.Figure()
 
     fig.update_layout(
-        template="simple_white",
+        template="custom_theme",
         title='Lines per Act',
         dragmode=False,
-        barmode='relative'
+        barmode='stack'
     )
 
     return fig
-
 
 
 def draw(fig, data, mode):
@@ -47,28 +46,28 @@ def draw(fig, data, mode):
     column = MODE_TO_COLUMN[mode]
     fig = go.Figure(fig)
 
-    for player in data['Player'].unique():
+    colorway = pio.templates['custom_theme'].layout.colorway
+
+    for i, player in enumerate(data['Player'].unique()):
         player_data = data[data['Player'] == player]
         if not player_data.empty:
             fig.add_trace(go.Bar(
                 x=[f'Act {act}' for act in player_data['Act']],
                 y=player_data[column],
                 name=player,
+                marker=dict(color=colorway[i % len(colorway)]),
                 hovertemplate=get_hover_template(player, mode)
             ))
 
     fig.update_layout(
         xaxis_title="Act",
         yaxis_title="Lines (%)" if mode == MODES['percent'] else "Lines (Count)",
-        barmode='stack',  
+        barmode='stack',
         legend_title="Player",
         hovermode='closest'
     )
 
     return fig
-
-
-
 
 
 def update_y_axis(fig, mode):
@@ -85,4 +84,3 @@ def update_y_axis(fig, mode):
     y_axis_title = 'Lines (%)' if mode == MODES['percent'] else 'Lines (Count)'
     fig.update_layout(yaxis_title=y_axis_title)
     return fig
-

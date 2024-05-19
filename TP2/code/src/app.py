@@ -36,7 +36,7 @@ def prep_data():
         Returns:
             A pandas dataframe containing the preprocessed data.
     '''
-    dataframe = pd.read_csv('./assets/data/romeo_and_juliet.csv')
+    dataframe = pd.read_csv('src/assets/data/romeo_and_juliet.csv')
 
     proc_data = preprocess.summarize_lines(dataframe)
     proc_data = preprocess.replace_others(proc_data)
@@ -69,7 +69,7 @@ def init_app_layout(figure):
                         showTips=False,
                         showAxisDragHandles=False,
                         doubleClick=False,
-                        displayModeBar=True  # Enable the display mode bar
+                        displayModeBar=True
                     ),
                     className='graph',
                     id='line-chart'

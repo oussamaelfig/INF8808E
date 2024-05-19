@@ -5,14 +5,7 @@ import plotly.graph_objects as go
 import plotly.io as pio
 
 THEME = {
-    'bar_colors': [
-        '#861388',
-        '#d4a0a7',
-        '#dbd053',
-        '#1b998b',
-        '#A0CED9',
-        '#3e6680'
-    ],
+    'color_scale': 'plotly',  
     'background_color': '#ebf2fa',
     'font_family': 'Montserrat',
     'font_color': '#898989',
@@ -27,9 +20,8 @@ def create_template():
     '''
     custom_template = go.layout.Template()
 
-    # Set the colors, font, and background
     custom_template.layout = go.Layout(
-        colorway=THEME['bar_colors'],
+        colorway=pio.templates[THEME['color_scale']].layout.colorway,
         paper_bgcolor=THEME['background_color'],
         plot_bgcolor=THEME['background_color'],
         font=dict(
@@ -53,5 +45,4 @@ def create_template():
     )
 
     pio.templates['custom_theme'] = custom_template
-
     pio.templates.default = 'custom_theme'
