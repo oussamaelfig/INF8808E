@@ -36,7 +36,7 @@ def prep_data():
         Returns:
             A pandas dataframe containing the preprocessed data.
     '''
-    dataframe = pd.read_csv('./src/assets/data/romeo_and_juliet.csv')
+    dataframe = pd.read_csv('./assets/data/romeo_and_juliet.csv')
 
     proc_data = preprocess.summarize_lines(dataframe)
     proc_data = preprocess.replace_others(proc_data)
@@ -51,6 +51,7 @@ def init_app_layout(figure):
 
         Args:
             figure: The figure to display.
+
         Returns:
             The HTML structure of the app's web page.
     '''
@@ -68,7 +69,7 @@ def init_app_layout(figure):
                         showTips=False,
                         showAxisDragHandles=False,
                         doubleClick=False,
-                        displayModeBar=False
+                        displayModeBar=True  # Enable the display mode bar
                     ),
                     className='graph',
                     id='line-chart'
@@ -78,22 +79,18 @@ def init_app_layout(figure):
         html.Footer(children=[
             html.Div(className='panel', children=[
                 html.Div(id='info', children=[
-                    html.P('Use the radio buttons to change the display.'),
+                    html.P('Use the radio buttons to change the display mode.'),
                     html.P(children=[
                         html.Span('The current mode is : '),
-                        html.Span(MODES['count'], id='mode')
+                        html.Span('Count', id='mode')
                     ])
                 ]),
                 html.Div(children=[
                     dcc.RadioItems(
                         id='radio-items',
                         options=[
-                            dict(
-                                label=MODES['count'],
-                                value=MODES['count']),
-                            dict(
-                                label=MODES['percent'],
-                                value=MODES['percent']),
+                            dict(label=MODES['count'], value=MODES['count']),
+                            dict(label=MODES['percent'], value=MODES['percent']),
                         ],
                         value=MODES['count']
                     )
@@ -103,37 +100,43 @@ def init_app_layout(figure):
     ])
 
 
+
 @app.callback(
     [Output('line-chart', 'figure'), Output('mode', 'children')],
     [Input('radio-items', 'value')],
     [State('line-chart', 'figure')]
 )
-def radio_updated(mode, figure):
+def update_chart(mode, figure):
     '''
-        Updates the application after the radio input is modified.
+        Updates the application after the mode input is modified.
 
         Args:
             mode: The mode selected in the radio input.
-            figure: The figure as it is currently displayed
+            figure: The figure as it is currently displayed.
+
         Returns:
-            new_fig: The figure to display after the change of radio input
-            mode: The new mode
+            new_fig: The figure to display after the change of inputs.
+            mode_text: The new mode text.
     '''
     new_fig = bar_chart.init_figure()
     new_fig = bar_chart.draw(new_fig, data, mode)
-    new_fig = bar_chart.update_y_axis(new_fig, mode)
     
-    mode_text = 'Percent Mode' if mode == MODES['percent'] else 'Count Mode' # Update the mode text
+    mode_text = 'Percent Mode' if mode == MODES['percent'] else 'Count Mode'
     
     return new_fig, mode_text
 
 
+
 data = prep_data()
+all_players = data['Player'].unique().tolist()
 
 create_template()
 
 fig = bar_chart.init_figure()
-fig = bar_chart.draw(fig, data, MODES['count'])
-fig = bar_chart.update_y_axis(fig, MODES['count'])
+fig = bar_chart.draw(fig, data, MODES['count'])  # Default to 'Count' mode
 
 app.layout = init_app_layout(fig)
+
+
+
+

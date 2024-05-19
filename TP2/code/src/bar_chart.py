@@ -46,24 +46,29 @@ def draw(fig, data, mode):
     '''
     column = MODE_TO_COLUMN[mode]
     fig = go.Figure(fig)
-    for act in data['Act'].unique():
-        act_data = data[data['Act'] == act]
-        for _, row in act_data.iterrows():
+
+    # Create a trace for each player
+    for player in data['Player'].unique():
+        player_data = data[data['Player'] == player]
+        if not player_data.empty:
             fig.add_trace(go.Bar(
-                x=[row['Player']],
-                y=[row[column]],
-                name=f'Act {act}',
-                hovertemplate=get_hover_template(row['Player'], mode)
+                x=[f'Act {act}' for act in player_data['Act']],
+                y=player_data[column],
+                name=player,
+                hovertemplate=get_hover_template(player, mode)
             ))
 
     fig.update_layout(
-        xaxis_title="Player",
-        yaxis_title=column,
-        legend_title="Act",
+        xaxis_title="Act",
+        yaxis_title="Lines (%)" if mode == MODES['percent'] else "Lines (Count)",
+        barmode='stack',  # Change to 'stack' to stack the bars
+        legend_title="Player",
         hovermode='closest'
     )
 
     return fig
+
+
 
 
 
@@ -81,3 +86,4 @@ def update_y_axis(fig, mode):
     y_axis_title = 'Lines (%)' if mode == MODES['percent'] else 'Lines (Count)'
     fig.update_layout(yaxis_title=y_axis_title)
     return fig
+
