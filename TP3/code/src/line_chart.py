@@ -95,12 +95,13 @@ def get_figure(line_data, arrond, year):
     else:
         fig = px.line(line_data, x='Date_Plantation', y='Counts', title=f'Trees planted in {arrond} in {year}')
         fig.update_traces(line=dict(color=THEME['line_chart_color']))
-    
+
     if not line_data.empty:
         fig.update_layout(
             xaxis_title=None, 
             yaxis_title="Trees",
             xaxis=dict(
+                tickformat="%d %b %Y",  # Ensure date format
                 range=[line_data['Date_Plantation'].min(), line_data['Date_Plantation'].max()]
             )
         )

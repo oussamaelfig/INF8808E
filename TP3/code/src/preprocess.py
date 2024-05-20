@@ -95,4 +95,7 @@ def get_daily_info(dataframe, arrond, year):
     last_non_zero = daily_counts['Counts'].iloc[::-1].ne(0).idxmax()
     daily_counts = daily_counts.iloc[first_non_zero:last_non_zero+1]
     
+    # Ensure only the date part is considered
+    daily_counts['Date_Plantation'] = daily_counts['Date_Plantation'].dt.date
+    
     return daily_counts
