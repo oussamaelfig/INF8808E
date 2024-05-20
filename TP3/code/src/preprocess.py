@@ -13,7 +13,7 @@ def convert_dates(dataframe):
         Returns:
             The processed dataframe with datetime-formatted dates.
     '''
-    # TODO : Convert dates
+    dataframe['Date_Plantation'] = pd.to_datetime(dataframe['Date_Plantation'])
     return dataframe
 
 
@@ -29,7 +29,7 @@ def filter_years(dataframe, start, end):
         Returns:
             The dataframe filtered by date.
     '''
-    # TODO : Filter by dates
+    dataframe = dataframe[(dataframe['Date_Plantation'].dt.year >= start) & (dataframe['Date_Plantation'].dt.year <= end)]
     return dataframe
 
 
@@ -46,8 +46,9 @@ def summarize_yearly_counts(dataframe):
             containing the counts of planted
             trees for each neighborhood each year.
     '''
-    # TODO : Summarize df
-    return None
+    dataframe['Year'] = dataframe['Date_Plantation'].dt.year
+    yearly_counts = dataframe.groupby(['Arrond_Nom', 'Year']).size().reset_index(name='Counts')
+    return yearly_counts
 
 
 def restructure_df(yearly_df):
@@ -68,8 +69,8 @@ def restructure_df(yearly_df):
         Returns:
             The restructured dataframe
     '''
-    # TODO : Restructure df and fill empty cells with 0
-    return None
+    heatmap_df = yearly_df.pivot(index='Arrond_Nom', columns='Year', values='Counts').fillna(0)
+    return heatmap_df
 
 
 def get_daily_info(dataframe, arrond, year):
@@ -86,5 +87,12 @@ def get_daily_info(dataframe, arrond, year):
             The daily tree count data for that
             neighborhood and year.
     '''
-    # TODO : Get daily tree count data and return
-    return None
+    daily_data = dataframe[(dataframe['Arrond_Nom'] == arrond) & (dataframe['Date_Plantation'].dt.year == year)]
+    daily_data.set_index('Date_Plantation', inplace=True)
+    daily_counts = daily_data.resample('D').size().reset_index(name='Counts')
+    # Filter out leading and trailing zeros to focus on the active period
+    first_non_zero = daily_counts['Counts'].ne(0).idxmax()
+    last_non_zero = daily_counts['Counts'].iloc[::-1].ne(0).idxmax()
+    daily_counts = daily_counts.iloc[first_non_zero:last_non_zero+1]
+    
+    return daily_counts
