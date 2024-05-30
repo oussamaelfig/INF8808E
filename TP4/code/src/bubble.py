@@ -26,8 +26,24 @@ def get_plot(my_df, gdp_range, co2_range):
         Returns:
             The generated figure
     '''
-    # TODO : Define figure with animation
-    return None
+    fig = px.scatter(
+        my_df,
+        x='GDP',
+        y='CO2',
+        animation_frame='Year',
+        animation_group='Country Name',
+        size='Population',
+        color='Continent',
+        hover_name='Country Name',
+        log_x=True,
+        log_y=True,
+        size_max=60,
+        range_x=gdp_range,
+        range_y=co2_range,
+        color_discrete_sequence=px.colors.qualitative.Set1,
+        custom_data=['Population']
+    )
+    return fig
 
 
 def update_animation_hover_template(fig):
@@ -42,8 +58,16 @@ def update_animation_hover_template(fig):
             The updated figure
     '''
 
-    # TODO : Set the hover template
-    return None
+    hover_template_str = hover_template.get_bubble_hover_template()
+    
+    for trace in fig.data:
+        trace.update(hovertemplate=hover_template_str)
+    
+    for frame in fig.frames:
+        for trace in frame.data:
+            trace.update(hovertemplate=hover_template_str)
+    
+    return fig
 
 
 def update_animation_menu(fig):
@@ -56,8 +80,36 @@ def update_animation_menu(fig):
         Returns
             The updated figure
     '''
-    # TODO : Update animation menu
-    return None
+    fig.update_layout(
+        updatemenus=[
+            {
+                'buttons': [
+                    {
+                        'args': [None, {'frame': {'duration': 1000, 'redraw': True}, 'fromcurrent': True, 'transition': {'duration': 500}}],
+                        'label': 'Animate',
+                        'method': 'animate'
+                    }
+                ],
+                'direction': 'left',
+                'pad': {'r': 10, 't': 87},
+                'showactive': False,
+                'type': 'buttons',
+                'x': 0.1,
+                'xanchor': 'right',
+                'y': 0,
+                'yanchor': 'top'
+            }
+        ]
+    )
+    fig.update_layout(sliders=[{
+        'currentvalue': {
+            'prefix': 'Data for year: ',
+            'font': {'size': 20}
+        },
+        'pad': {'b': 10, 't': 50},
+    }])
+    
+    return fig
 
 
 def update_axes_labels(fig):
@@ -69,8 +121,9 @@ def update_axes_labels(fig):
         Returns:
             The updated figure
     '''
-    # TODO : Update labels
-    return None
+    fig.update_xaxes(title_text='GDP per capita ($ USD)')
+    fig.update_yaxes(title_text='CO2 emissions per capita (metric tonnes)')
+    return fig
 
 
 def update_template(fig):
@@ -83,8 +136,8 @@ def update_template(fig):
         Returns
             The updated figure
     '''
-    # TODO : Update template
-    return None
+    fig.update_layout(template='simple_white')
+    return fig
 
 
 def update_legend(fig):
@@ -96,5 +149,5 @@ def update_legend(fig):
         Returns:
             The updated figure
     '''
-    # TODO : Update legend
-    return None
+    fig.update_layout(legend_title_text='Continent')
+    return fig
