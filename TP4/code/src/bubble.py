@@ -77,7 +77,7 @@ def update_animation_menu(fig):
 
         Args:
             fig: The figure containing the menu to update
-        Returns
+        Returns:
             The updated figure
     '''
     fig.update_layout(
@@ -93,7 +93,7 @@ def update_animation_menu(fig):
                         'args': [None, {'frame': {'duration': 0, 'redraw': False}, 'fromcurrent': True, 'transition': {'duration': 0}}],
                         'label': 'Pause',
                         'method': 'animate',
-                        'visible': False  # Rendre le bouton "Pause" invisible
+                        'visible': False 
                     }
                 ],
                 'direction': 'left',
@@ -107,12 +107,24 @@ def update_animation_menu(fig):
             }
         ]
     )
+
     fig.update_layout(sliders=[{
         'currentvalue': {
             'prefix': 'Data for year: ',
             'font': {'size': 20}
         },
         'pad': {'b': 10, 't': 50},
+        'steps': [
+            {
+                'args': [[frame.name], {
+                    'frame': {'duration': 0, 'redraw': True},
+                    'mode': 'immediate',
+                    'transition': {'duration': 0}
+                }],
+                'label': frame.name,
+                'method': 'animate'
+            } for frame in fig.frames
+        ]
     }])
     
     return fig
