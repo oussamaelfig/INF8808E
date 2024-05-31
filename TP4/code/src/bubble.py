@@ -99,15 +99,15 @@ def update_animation_menu(fig):
                 'y': 0,
                 'yanchor': 'top'
             }
-        ]
+        ],
+        sliders=[{
+            'currentvalue': {
+                'prefix': 'Data for year: ',
+                'font': {'size': 20}
+            },
+            'pad': {'b': 10, 't': 50},
+        }]
     )
-    fig.update_layout(sliders=[{
-        'currentvalue': {
-            'prefix': 'Data for year: ',
-            'font': {'size': 20}
-        },
-        'pad': {'b': 10, 't': 50},
-    }])
     
     return fig
 
