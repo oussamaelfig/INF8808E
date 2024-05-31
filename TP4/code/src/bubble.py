@@ -88,6 +88,12 @@ def update_animation_menu(fig):
                         'args': [None, {'frame': {'duration': 1000, 'redraw': True}, 'fromcurrent': True, 'transition': {'duration': 500}}],
                         'label': 'Animate',
                         'method': 'animate'
+                    },
+                    {
+                        'args': [None, {'frame': {'duration': 0, 'redraw': False}, 'fromcurrent': True, 'transition': {'duration': 0}}],
+                        'label': 'Pause',
+                        'method': 'animate',
+                        'visible': False  # Rendre le bouton "Pause" invisible
                     }
                 ],
                 'direction': 'left',
@@ -99,15 +105,15 @@ def update_animation_menu(fig):
                 'y': 0,
                 'yanchor': 'top'
             }
-        ],
-        sliders=[{
-            'currentvalue': {
-                'prefix': 'Data for year: ',
-                'font': {'size': 20}
-            },
-            'pad': {'b': 10, 't': 50},
-        }]
+        ]
     )
+    fig.update_layout(sliders=[{
+        'currentvalue': {
+            'prefix': 'Data for year: ',
+            'font': {'size': 20}
+        },
+        'pad': {'b': 10, 't': 50},
+    }])
     
     return fig
 
