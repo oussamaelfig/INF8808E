@@ -1,6 +1,7 @@
 '''
     Contains some functions to preprocess the data used in the visualisation.
 '''
+import json
 import pandas as pd
 
 TITLES = {
@@ -16,56 +17,47 @@ TITLES = {
 
 
 def to_df(data):
-    '''
-        Converts the data to a pandas dataframe.
+    features = data['features']
+    rows = []
+    for feature in features:
+        properties = feature['properties']
+        coordinates = feature['geometry']['coordinates']
+        properties['longitude'] = coordinates[0]
+        properties['latitude'] = coordinates[1]
+        rows.append(properties)
 
-        Args:
-            data: The data to convert
-        Returns:
-            my_df: The corresponding dataframe
-    '''
-    # TODO : Convert JSON formatted data to dataframe
-    return None
+    return pd.DataFrame(rows)
 
 
 def update_titles(my_df):
-    '''
-        Updates the column "TYPE_SITE_INTERVENTION" with corresponding
-        values from the 'TITLES' dictionary (above).
+    my_df['TYPE_AXE'] = my_df['TYPE_AXE'].replace(TITLES)
+    return my_df
 
-        Args:
-            my_df: The dataframe to update
-        Returns:
-            my_df: The dataframe with the appropriate replacements
-                made according to the 'TITLES' dictionary
-    '''
-    # TODO : Update the titles
-    return None
 
 
 def sort_df(my_df):
-    '''
-        Sorts the dataframe by the column "TYPE_SITE_INTERVENTION" in
-        alphabetical order.
+    my_df = my_df.sort_values('TYPE_AXE')
+    return my_df
 
-        Args:
-            my_df: The dataframe to sort
-        Returns:
-            my_df: The sorted dataframe
-    '''
-    # TODO : Sort the df
-    return None
+def convert_dict_to_dataframe(geojson_dict):
+    # This function assumes 'geojson_dict' is a dictionary formatted as GeoJSON
+    features = geojson_dict.get('features', [])  # safely get features list or empty list if not present
+    # Extract properties and potentially coordinates from each feature
+    data_rows = []
+    for feature in features:
+        properties = feature.get('properties', {})  # safely get properties or empty dict if not present
+        if 'geometry' in feature and 'coordinates' in feature['geometry']:  # check if coordinates are present
+            properties['coordinates'] = feature['geometry']['coordinates']
+        data_rows.append(properties)
+    return pd.DataFrame(data_rows)
 
 
 def get_neighborhoods(montreal_data):
-    '''
-        Gets the name of the neighborhoods in the dataset
+    print("*****")
+    
+    montreal_df = convert_dict_to_dataframe(montreal_data)
 
-        Args:
-            montreal_data: The data to parse
-        Returns:
-            locations: An array containing the names of the
-                neighborhoods in the data set
-    '''
-    # TODO : Return the array of neighborhoods
-    return None
+
+    neighborhoods = montreal_df['NOM'].unique().tolist()
+    return neighborhoods
+

@@ -10,42 +10,35 @@ import hover_template as hover
 
 
 def add_choro_trace(fig, montreal_data, locations, z_vals, colorscale):
-    '''
-        Adds the choropleth trace, representing Montreal's neighborhoods.
+    fig.add_trace(go.Choropleth(
+        geojson=montreal_data,
+        locations=locations,
+        z=z_vals,
+        colorscale=colorscale,
+        showscale=False,  # Hide the color scale bar
+        marker_line_color='white',  # Line color between neighborhoods
+        marker_line_width=0.5,  # Line width between neighborhoods
+    ))
+    fig.update_geos(fitbounds="locations")  # Fit the bounds to the geojson locations
+    return fig
 
-        Note: The z values and colorscale provided ensure every neighborhood
-        will be grey in color. Although the trace is defined using Plotly's
-        choropleth features, we are simply defining our base map.
-
-        The opacity of the map background color should be 0.2.
-
-        Args:
-            fig: The figure to add the choropleth trace to
-            montreal_data: The data used for the trace
-            locations: The locations (neighborhoods) to show on the trace
-            z_vals: The table to use for the choropleth's z values
-            colorscale: The table to use for the choropleth's color scale
-        Returns:
-            fig: The updated figure with the choropleth trace
-
-    '''
-    # TODO : Draw the map base
-    return None
 
 
 def add_scatter_traces(fig, street_df):
-    '''
-        Adds the scatter trace, representing Montreal's pedestrian paths.
+    # Assuming 'type' column categorizes the paths and 'longitude' and 'latitude' columns exist
+    for path_type, group in street_df.groupby('TYPE_AXE'):
+        fig.add_trace(go.Scattermapbox(
+            lon=group['longitude'],
+            lat=group['latitude'],
+            mode='markers',
+            marker=go.scattermapbox.Marker(
+                size=20,
+                opacity=0.7
+            ),
+            name=path_type,
+            hoverinfo='text',
+        ))
+    fig.update_layout(mapbox_style="light", mapbox_zoom=10, mapbox_center={"lat": 45.5017, "lon": -73.5673})
+    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+    return fig
 
-        The marker size should be 20.
-
-        Args:
-            fig: The figure to add the scatter trace to
-            street_df: The dataframe containing the information on the
-                pedestrian paths to display
-        Returns:
-            The figure now containing the scatter trace
-
-    '''
-    # TODO : Add the scatter markers to the map base
-    return None
