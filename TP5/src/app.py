@@ -50,7 +50,6 @@ fig = map_viz.add_scatter_traces(fig, street_df, )
 fig = helper.adjust_map_style(fig)
 fig = helper.adjust_map_sizing(fig)
 fig = helper.adjust_map_info(fig)
-
 app.layout = html.Div(
     className='row',
     children=[

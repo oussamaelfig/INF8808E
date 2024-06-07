@@ -15,12 +15,11 @@ def add_choro_trace(fig, montreal_data, locations, z_vals, colorscale):
         locations=locations,
         z=z_vals,
         colorscale=colorscale,
-        showscale=False,  # Do not show color scale bar
-        marker_line_color='black',  # Line color between neighborhoods
+        showscale=False, 
+        marker_line_color='white', 
         marker_line_width=0.5,  # Line width between neighborhoods
-        hoverinfo='all',  # Configure as needed for hover information
+        hoverinfo='all',  
     ))
-    fig.update_layout(mapbox_style="light", mapbox_zoom=10, mapbox_center={"lat": 45.5017, "lon": -73.5673})
     return fig
 
 
@@ -34,7 +33,7 @@ def add_scatter_traces(fig, street_df):
             lat=group['latitude'],
             mode='markers',
             marker=go.scattermapbox.Marker(
-                size=10,  # Adjust size as necessary
+                size=10,  
                 opacity=0.7
             ),
             name=path_type,
