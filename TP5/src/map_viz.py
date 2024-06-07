@@ -10,17 +10,19 @@ import hover_template as hover
 
 
 def add_choro_trace(fig, montreal_data, locations, z_vals, colorscale):
-    fig.add_trace(go.Choropleth(
+    fig.add_trace(go.Choroplethmapbox(
         geojson=montreal_data,
         locations=locations,
         z=z_vals,
         colorscale=colorscale,
-        showscale=False,  # Hide the color scale bar
-        marker_line_color='white',  # Line color between neighborhoods
+        showscale=False,  # Do not show color scale bar
+        marker_line_color='black',  # Line color between neighborhoods
         marker_line_width=0.5,  # Line width between neighborhoods
+        hoverinfo='all',  # Configure as needed for hover information
     ))
-    fig.update_geos(fitbounds="locations")  # Fit the bounds to the geojson locations
+    fig.update_layout(mapbox_style="light", mapbox_zoom=10, mapbox_center={"lat": 45.5017, "lon": -73.5673})
     return fig
+
 
 
 
@@ -32,13 +34,13 @@ def add_scatter_traces(fig, street_df):
             lat=group['latitude'],
             mode='markers',
             marker=go.scattermapbox.Marker(
-                size=20,
+                size=10,  # Adjust size as necessary
                 opacity=0.7
             ),
             name=path_type,
             hoverinfo='text',
+            hovertext=group['NOM_PROJET']  # Assuming a column for the project name
         ))
-    fig.update_layout(mapbox_style="light", mapbox_zoom=10, mapbox_center={"lat": 45.5017, "lon": -73.5673})
-    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
     return fig
+
 
