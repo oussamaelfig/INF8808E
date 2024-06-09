@@ -20,7 +20,10 @@ def map_marker_clicked(figure, curve, point, title, mode, theme, style):
         theme_content = html.Div("No thematic information available")
     else:
         theme_items = theme_str.split('\n')
-        theme_content = html.Ul([html.Li(item) for item in theme_items if item.strip()], style={'padding-left': '20px', 'list-style-type': 'disc'})
+        theme_content = html.Div([
+            html.H5("Themes:"),
+            html.Ul([html.Li(item) for item in theme_items if item.strip()], style={'padding-left': '20px', 'list-style-type': 'disc'})
+        ], className='theme-list')
 
     style['visibility'] = 'visible'
     style['display'] = 'block'
