@@ -26,10 +26,10 @@ import callback
 app = dash.Dash(__name__)
 app.title = 'TP5 | INF8808'
 
-with open('./src/assets/data/montreal.json', encoding='utf-8') as data_file:
+with open('./assets/data/montreal.json', encoding='utf-8') as data_file:
     montreal_data = json.load(data_file)
 
-with open('./src/assets/data/projetpietonnisation2017.geojson',
+with open('./assets/data/projetpietonnisation2017.geojson',
           encoding='utf-8') as data_file:
     street_data = json.load(data_file)
 
@@ -76,51 +76,26 @@ app.layout = html.Div(
                              html.Div(id='theme', style={
                                  'fontSize': '16px'})])])])
 
+from dash.dependencies import Input, Output, State
 
-@app.callback([Output('marker-title', 'children'),
-               Output('mode', 'children'),
-               Output('theme', 'children'),
-               Output('panel', 'style')],
-              [Input('graph', 'clickData')],
-              [State('graph', 'figure'),
-               State('marker-title', 'children'),
-               State('mode', 'children'),
-               State('theme', 'children'),
-               State('panel', 'style')])
-def display(clicks_fig, figure, title, mode, theme, style): # noqa : E501 pylint: disable=unused-argument too-many-arguments line-too-long
-    '''
-        This function handles clicks on the map. When a
-        marker is clicked, more information is displayed
-        in the panel on the right of the map.
 
-        Args:
-            clicks_fig: The clickData associated with the map
-            figure: The figure containing the map
-            title: The current display title
-            mode: The current display title
-            theme: The current display theme
-            style: The current display style for the panel
-        Returns:
-            title: The updated display title
-            mode: The updated display title
-            theme: The updated display theme
-            style: The updated display style for the panel
-    '''
-    ctx = dash.callback_context
+@app.callback(
+    [Output('marker-title', 'children'),
+     Output('mode', 'children'),
+     Output('theme', 'children'),
+     Output('panel', 'style')],
+    [Input('graph', 'clickData')],
+    [State('graph', 'figure')]
+)
+def display_panel(clickData, figure):
+    if not clickData:
+        return '', '', '', {'display': 'none'}
+    
+    point = clickData['points'][0]
+    curve = point['curveNumber']
+    idx = point['pointIndex']
 
-    if not ctx.triggered:
-        return callback.no_clicks(style)
-    if ctx.triggered[0]['prop_id'].split('.')[0] == 'graph':
-        curve = ctx.triggered[0]['value']['points'][0]['curveNumber']
-        point = ctx.triggered[0]['value']['points'][0]['pointNumber']
-
-        if curve == 0:
-            return callback.map_base_clicked(title, mode, theme, style)
-        return callback.map_marker_clicked(figure,
-                                           curve,
-                                           point,
-                                           title,
-                                           mode,
-                                           theme,
-                                           style)
-    return None, None, None, None
+    if 'customdata' in figure['data'][curve]:
+        return callback.map_marker_clicked(figure, curve, idx, '', '', '', {'visibility': 'hidden'})
+    else:
+        return dash.no_update
