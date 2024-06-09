@@ -1,6 +1,3 @@
-'''
-    Contains some functions to preprocess the data used in the visualisation.
-'''
 import pandas as pd
 
 TITLES = {
@@ -16,56 +13,20 @@ TITLES = {
 
 
 def to_df(data):
-    '''
-        Converts the data to a pandas dataframe.
-
-        Args:
-            data: The data to convert
-        Returns:
-            my_df: The corresponding dataframe
-    '''
-    # TODO : Convert JSON formatted data to dataframe
-    return None
+    my_df = pd.json_normalize(data['features'])
+    return my_df
 
 
 def update_titles(my_df):
-    '''
-        Updates the column "TYPE_SITE_INTERVENTION" with corresponding
-        values from the 'TITLES' dictionary (above).
-
-        Args:
-            my_df: The dataframe to update
-        Returns:
-            my_df: The dataframe with the appropriate replacements
-                made according to the 'TITLES' dictionary
-    '''
-    # TODO : Update the titles
-    return None
+    my_df['properties.TYPE_SITE_INTERVENTION'] = my_df['properties.TYPE_SITE_INTERVENTION'].map(TITLES)
+    return my_df
 
 
 def sort_df(my_df):
-    '''
-        Sorts the dataframe by the column "TYPE_SITE_INTERVENTION" in
-        alphabetical order.
-
-        Args:
-            my_df: The dataframe to sort
-        Returns:
-            my_df: The sorted dataframe
-    '''
-    # TODO : Sort the df
-    return None
+    my_df = my_df.sort_values(by='properties.TYPE_SITE_INTERVENTION')
+    return my_df
 
 
 def get_neighborhoods(montreal_data):
-    '''
-        Gets the name of the neighborhoods in the dataset
-
-        Args:
-            montreal_data: The data to parse
-        Returns:
-            locations: An array containing the names of the
-                neighborhoods in the data set
-    '''
-    # TODO : Return the array of neighborhoods
-    return None
+    neighborhoods = [feature['properties']['NOM'] for feature in montreal_data['features']]
+    return neighborhoods

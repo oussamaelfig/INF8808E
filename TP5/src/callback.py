@@ -1,63 +1,31 @@
-'''
-    This file contains the functions to call when
-    a click is detected on the map, depending on the context
-'''
-import dash_html_components as html
-
+from dash import html, dcc
 
 def no_clicks(style):
-    '''
-        Deals with the case where the map was not clicked
-
-        Args:
-            style: The current display style for the panel
-        Returns:
-            title: The updated display title
-            mode: The updated display title
-            theme: The updated display theme
-            style: The updated display style for the panel
-    '''
-    # TODO : Handle no clicks on the map
-    return None, None, None, None
-
+    style['visibility'] = 'hidden'
+    return [], style
 
 def map_base_clicked(title, mode, theme, style):
-    '''
-        Deals with the case where the map base is
-        clicked (but not a marker)
+    style['visibility'] = 'hidden'
+    return [], style 
 
-        Args:
-            title: The current display title
-            mode: The current display title
-            theme: The current display theme
-            style: The current display style for the panel
-        Returns:
-            title: The updated display title
-            mode: The updated display title
-            theme: The updated display theme
-            style: The updated display style for the panel
-    '''
-    # TODO : Handle clicks on the map base
-    return None, None, None, None
+def map_marker_clicked(figure, curve, point, title, mode, theme, style):
+    data = figure['data'][curve]
+    custom_data = data['customdata'][point]
+    
+    title = custom_data[0]  
+    mode = custom_data[1] 
+    theme_str = custom_data[2]  
 
+    if not theme_str:
+        theme_content = html.Div("No thematic information available")
+    else:
+        theme_items = theme_str.split('\n')
+        theme_content = html.Div([
+            html.H5("Themes:"),
+            html.Ul([html.Li(item) for item in theme_items if item.strip()], style={'padding-left': '20px', 'list-style-type': 'disc'})
+        ], className='theme-list')
 
-def map_marker_clicked(figure, curve, point, title, mode, theme, style): # noqa : E501 pylint: disable=unused-argument too-many-arguments line-too-long
-    '''
-        Deals with the case where a marker is clicked
+    style['visibility'] = 'visible'
+    style['display'] = 'block'
 
-        Args:
-            figure: The current figure
-            curve: The index of the curve containing the clicked marker
-            point: The index of the clicked marker
-            title: The current display title
-            mode: The current display title
-            theme: The current display theme
-            style: The current display style for the panel
-        Returns:
-            title: The updated display title
-            mode: The updated display title
-            theme: The updated display theme
-            style: The updated display style for the panel
-    '''
-    # TODO : Handle clicks on the markers
-    return None, None, None, None
+    return title, mode, theme_content, style
