@@ -26,10 +26,10 @@ import callback
 app = dash.Dash(__name__)
 app.title = 'TP5 | INF8808'
 
-with open('./assets/data/montreal.json', encoding='utf-8') as data_file:
+with open('./src/assets/data/montreal.json', encoding='utf-8') as data_file:
     montreal_data = json.load(data_file)
 
-with open('./assets/data/projetpietonnisation2017.geojson',
+with open('./src/assets/data/projetpietonnisation2017.geojson',
           encoding='utf-8') as data_file:
     street_data = json.load(data_file)
 

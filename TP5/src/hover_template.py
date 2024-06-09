@@ -12,8 +12,7 @@ def map_base_hover_template():
         Returns:
             The hover template.
     '''
-    # TODO : Generate the hover template
-    return ''
+    return '<b style="font-family: Oswald;">%{location}</b>'
 
 
 def map_marker_hover_template(name):
@@ -27,5 +26,4 @@ def map_marker_hover_template(name):
         Returns:
             The hover template.
     '''
-    # TODO : Generate the hover template
-    return ''
+    return f'<b style="font-family: Oswald;">{name}</b>'
